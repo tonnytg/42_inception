@@ -10,4 +10,4 @@ version of Alpine or Debian
 
 #### Diagram
 
-![Diagram](./srcs/requirements/images/diagram-project.png)
+![Diagram](./diagram-project.png)
