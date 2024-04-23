@@ -1,0 +1,70 @@
+version: '3'
+services:
+
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    volumes:
+      - /home/${LOGIN}/data/mysql:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: mysqladmin ping -h localhost -u root
+      interval: 30s
+      timeout: 15s
+      retries: 3    
+    env_file: .env
+    environment:
+      - WP_DB_NAME
+      - WP_DB_USER
+      - WP_DB_PASSWORD
+    networks:
+      - inception
+
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    env_file: .env
+    environment:
+      - WP_DB_HOST
+      - WP_DB_NAME
+      - WP_DB_USER
+      - WP_DB_PASSWORD
+      - DOMAIN_NAME
+      - WP_ADMIN_LOGIN
+      - WP_ADMIN_EMAIL
+      - WP_ADMIN_PASSWORD
+      - WP_USER_LOGIN
+      - WP_USER_EMAIL
+      - WP_USER_PASSWORD
+    volumes:
+      - /home/${LOGIN}/data/www:/var/www
+    restart: always
+    networks:
+      - inception
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    ports:
+      - 443:443
+    restart: always
+    env_file: .env
+    environment:
+      - DOMAIN_NAME
+    volumes:
+      - /home/${LOGIN}/data/www:/var/www
+    networks:
+      - inception
+    depends_on:
+      - wordpress
+
+volumes:
+  db_data:
+  wp_data:
+
+networks:
+  inception:
+    driver: bridge
