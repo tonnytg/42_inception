@@ -1,9 +1,7 @@
 export LOGIN=antthoma
 
 VOLUMES= /home/$(LOGIN)/data/mariadb \
-		 /home/$(LOGIN)/data/wordpress \
-		 /home/$(LOGIN)/data/adminer \
-		 /home/$(LOGIN)/data/uptime-kuma
+		 /home/$(LOGIN)/data/wordpress
 
 all: down up
 
