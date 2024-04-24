@@ -1,12 +1,18 @@
 export LOGIN=antthoma
 
+VOLUMES= /home/$(LOGIN)/data/mariadb \
+		 /home/$(LOGIN)/data/wordpress \
+		 /home/$(LOGIN)/data/adminer \
+		 /home/$(LOGIN)/data/uptime-kuma
+
 all: down up
 
 up:
 	@echo "Command: up"
-	@sudo mkdir -p /home/$(LOGIN)/data
-	@sudo mkdir -p /home/$(LOGIN)/data/www
-	@sudo mkdir -p /home/$(LOGIN)/data/mysql
+	@if [ ! -d /home/$(LOGIN)/data ]; then \
+		echo "Creating directory for data volume."; \
+		sudo mkdir -p $(VOLUMES); \
+	fi
 	@sudo chmod 777 /home/$(LOGIN)
 	@cd ./srcs && docker-compose up -d
 

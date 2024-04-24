@@ -17,6 +17,6 @@ RUN mkdir -p /etc/nginx/ssl && \
 
 COPY ./conf/nginx.conf /etc/nginx/conf.d
 
-RUN sed -i 's/__user__/${DOMAIN_NAME}/g' /etc/nginx/conf.d/nginx.conf
+RUN sed -i 's/__domain__/${DOMAIN_NAME}/g' /etc/nginx/conf.d/nginx.conf
 
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]

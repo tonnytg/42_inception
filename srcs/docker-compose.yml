@@ -1,11 +1,29 @@
 version: '3'
+
+volumes:
+  mariadb:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/${LOGIN}/data/mariadb
+  wordpress:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/${LOGIN}/data/wordpress
+  static-files:
+    driver_opts:
+      type: none
+      device: /home/${LOGIN}/data/static-files
+      o: bind
+
 services:
 
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
     volumes:
-      - /home/${LOGIN}/data/mysql:/var/lib/mysql
+      - mariadb:/var/lib/mysql
     restart: always
     healthcheck:
       test: mysqladmin ping -h localhost -u root
@@ -37,7 +55,7 @@ services:
       - WP_USER_EMAIL
       - WP_USER_PASSWORD
     volumes:
-      - /home/${LOGIN}/data/www:/var/www
+      - wordpress:/var/www/html
     restart: always
     networks:
       - inception
@@ -55,15 +73,11 @@ services:
     environment:
       - DOMAIN_NAME
     volumes:
-      - /home/${LOGIN}/data/www:/var/www
+      - wordpress:/var/www/html
     networks:
       - inception
     depends_on:
       - wordpress
-
-volumes:
-  db_data:
-  wp_data:
 
 networks:
   inception:
